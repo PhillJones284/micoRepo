@@ -114,8 +114,23 @@ function buildTabs (type) {
   tabsRowElem.appendChild(tabElem);
 }
 
-const buildEachType = () => {
+function buildEachType (type) {
+  const repoElem = this.repoElem;
+  const sectionElem = document.createElement("div");
+  sectionElem.id = type.repoType+"Section";
+  sectionElem.className = "repoSection";
+  sectionElem.style.display = "block";
+  repoElem.appendChild(sectionElem);
 
+  const textElem = document.createElement("h1");
+  const textNode = document.createTextNode(type.repoTitle);
+  textElem.appendChild(textNode);
+  sectionElem.appendChild(textElem);
+
+  const containerElem = document.createElement("div");
+  containerElem.id = type.repoType+"Container";
+  containerElem.className = "itemContainer";
+  sectionElem.appendChild(containerElem);
 };
 
 const buildStructure = () => {
@@ -148,63 +163,9 @@ const buildStructure = () => {
     tabsRowElem: tabsRowElem
   });
 
-  // The items are broken into three containers
-  // reportSection
-  // articleSection
-  // presentationSection
-
-  const reportSectionElem = document.createElement("div");
-  reportSectionElem.id = "reportSection";
-  reportSectionElem.className = "repoSection";
-  reportSectionElem.style.display = "block";
-  repoElem.appendChild(reportSectionElem);
-
-  const reportTextElem = document.createElement("h1");
-  const reportTextNode = document.createTextNode("Open reports");
-  reportTextElem.appendChild(reportTextNode);
-  reportSectionElem.appendChild(reportTextElem);
-
-  const reportContainerElem = document.createElement("div");
-  reportContainerElem.id = "reportContainer";
-  reportContainerElem.className = "itemContainer";
-  reportSectionElem.appendChild(reportContainerElem);
-
-  //////////
-
-  const articleSectionElem = document.createElement("div");
-  articleSectionElem.id = "articleSection";
-  articleSectionElem.className = "repoSection";
-  articleSectionElem.style.display = "none";
-  repoElem.appendChild(articleSectionElem);
-
-  const articleTextElem = document.createElement("h1");
-  const articleTextNode = document.createTextNode("Journal articles");
-  articleTextElem.appendChild(articleTextNode);
-  articleSectionElem.appendChild(articleTextElem);
-
-  const articleContainerElem = document.createElement("div");
-  articleContainerElem.id = "articleContainer";
-  articleContainerElem.className = "itemContainer";
-  articleSectionElem.appendChild(articleContainerElem);
-
-  //////////
-
-  const presentationSectionElem = document.createElement("div");
-  presentationSectionElem.id = "presentationSection";
-  presentationSectionElem.className = "repoSection";
-  presentationSectionElem.style.display = "none";
-  repoElem.appendChild(presentationSectionElem);
-
-  const presentationTextElem = document.createElement("h1");
-  const presentationTextNode = document.createTextNode("Presentations");
-  presentationTextElem.appendChild(presentationTextNode);
-  presentationSectionElem.appendChild(presentationTextElem);
-
-  const presentationContainerElem = document.createElement("div");
-  presentationContainerElem.id = "presentationContainer";
-  presentationContainerElem.className = "itemContainer";
-  presentationSectionElem.appendChild(presentationContainerElem);
-
+  arrOfTypes2.map(buildEachType, {
+    repoElem: repoElem
+  });
 }
 ///////////////////////////////
 // Populating the repository//
