@@ -1,0 +1,145 @@
+#repoInsert h1{
+  font-family: "Noto Sans JP", Helvetica, sans-serif;
+  margin-top: 1em;
+}
+
+#loadingScreen{
+  text-align: center;
+}
+
+.loader {
+  border: 2em solid #4D4E50; /* MoreBrains Mint */
+  border-top: 2em solid #00C4C4; /* MoreBrains Gray */
+  border-radius: 50%;
+  width: 8em;
+  height: 8em;
+  animation: spin 4s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#repo{
+  display: none;
+}
+
+.tabs{
+  display: inline-block;
+  text-align: center;
+  font-family: Lato, Helvetica, sans-serif;
+  color: black;
+  width: 10em;
+  padding-bottom: 0.2em;
+  margin: 0 4px 0 0;
+  cursor: pointer;
+  border-radius: 0 0 0.5em 0.5em;
+}
+
+#tabLine{
+  width: 100%;
+  height: 0.5em;
+  background-color: rgb(51, 204, 204);
+}
+
+#reportTab{
+  background-color: rgb(51, 204, 204);
+}
+
+#articleTab{
+  background-color: rgba(77, 78, 80, 0.2);
+}
+
+#presentationTab{
+  background-color: rgba(111, 136, 47, 0.2);
+}
+
+.itemContainer{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.itemBox{
+  margin: 0.5em;
+  padding: 1em 0.5em 0.5em 0.5em;
+  width: 15em;
+  background-color: rgb(240, 240, 240);
+}
+
+.thumbBox{
+  width: fit-content;
+  margin: 0 auto 1em auto;
+}
+
+.thumbBox img{
+  width: 8em;
+}
+
+.itemTitle{
+  font-family: "Noto Sans JP", Helvetica, sans-serif;
+  font-size: 1em;
+  margin: 0.1em 0.1em 0.3em 0.1em;
+  min-height: 3em;
+  line-height: 120%;
+}
+
+.itemAuthors, .itemDOI, .itemJnlTitle{
+  font-family: Lato, Helvetica, sans-serif;
+  margin: 0.1em 0.1em 0.2em 0.1em;
+}
+
+a{
+  text-decoration: none;
+}
+
+.itemTitle a{
+  color: rgb(75, 71, 193);
+  font-style: italic;
+}
+
+.itemJnlTitle{
+  color: #4D4E50;
+  font-size: 0.9em;
+}
+
+.itemAuthors{
+  font-size: 0.8em;
+  min-height: 3em;
+  line-height: 120%;
+}
+
+.itemAuthors a{
+  font-weight: 600;
+  color: #6F882F;
+}
+
+.itemDOI a{
+  color: #000000;
+  font-size: 0.8em;
+}
+
+@media only screen
+    AND (max-width: 694px){
+    #tabLine{
+        display: none;
+    }
+    #tabsRow{
+        text-align: center;
+    }
+    .tabs{
+        width: 30%;
+        border-radius: 0;
+        margin: 0;
+    }
+}
+
+@media only screen
+    AND (max-width: 493px){
+        .tabs{
+            font-size: 0.6em;
+        }
+    }
