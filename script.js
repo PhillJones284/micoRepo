@@ -1,3 +1,36 @@
+class itemType {
+  constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType){
+    this._repoType = repoType;
+    this._repoTitle = repoTitle;
+    this._repoTabTitle = repoTabTitle;
+    this._zenodoType = zenodoType;
+    this._zenodoSubType = zenodoSubType;
+  }
+  get repoType(){
+    return this._repoType;
+  }
+  get repoTitle(){
+    return this._repoTitle;
+  }
+  get repoTabTitle(){
+    return this._repoTabTitle;
+  }
+  get zenodoType(){
+    return this._zenodoType;
+  }
+  get zenodoSubType(){
+    return this._zenodoSubType;
+  }
+}
+
+const arrOfTypes2 = [
+  new itemType('report','Open Reports','Reports','publication','report'),
+  new itemType('article','Journal articles','Articles',
+    ['publication','publication'],
+    ['article','conferencepaper']),
+  new itemType('presentation','Presentations','Presentations','presentation','')
+];
+
 const arrOfTypes = ['report', 'article', 'presentation'];
 /*
 To store a local copy of the zenodo API response, set up a CRON job. For example:
@@ -71,6 +104,20 @@ const swtichView = (whichTab) => {
   }
 };
 
+function buildTabs (type) {
+  const tabsRowElem = this.tabsRowElem;
+  const tabElem = document.createElement("div");
+  tabElem.appendChild(document.createTextNode(type.repoTabTitle));
+  tabElem.id = type.repoType+"Tab";
+  tabElem.className = "tabs";
+  tabElem.onclick = () => swtichView(type.repoType);
+  tabsRowElem.appendChild(tabElem);
+}
+
+const buildEachType = () => {
+
+};
+
 const buildStructure = () => {
 
   const topElem = document.getElementById("repoInsert");
@@ -95,29 +142,11 @@ const buildStructure = () => {
 
   const tabLineElem = document.createElement("div");
   tabLineElem.id = "tabLine";
-
-  const reportTabElem = document.createElement("div");
-  reportTabElem.appendChild(document.createTextNode("Reports"));
-  reportTabElem.id = "reportTab";
-  reportTabElem.className = "tabs";
-  reportTabElem.onclick = () => swtichView("report");
-
-  const articleTabElem = document.createElement("div");
-  articleTabElem.appendChild(document.createTextNode("Articles"));
-  articleTabElem.id = "articleTab";
-  articleTabElem.className = "tabs";
-  articleTabElem.onclick = () => swtichView("article");
-
-  const presentTabElem = document.createElement("div");
-  presentTabElem.appendChild(document.createTextNode("Presentations"));
-  presentTabElem.id = "presentationTab";
-  presentTabElem.className = "tabs";
-  presentTabElem.onclick = () => swtichView("presentation");
-
   tabsRowElem.appendChild(tabLineElem);
-  tabsRowElem.appendChild(reportTabElem);
-  tabsRowElem.appendChild(articleTabElem);
-  tabsRowElem.appendChild(presentTabElem);
+
+  arrOfTypes2.map(buildTabs, {
+    tabsRowElem: tabsRowElem
+  });
 
   // The items are broken into three containers
   // reportSection
@@ -307,7 +336,6 @@ const filter = (stuffInZenodo) => {
     const keyB = new Date(b.metadata.publication_date);
     return (keyB - keyA);
   });
-  console.log(hits);
   // It loops over the item types so they can be displayed one at a time
   arrOfTypes.map(typeFilterValue => {
     const filteredStuffInZenodo = hits.filter(typeExtract.bind(null,typeFilterValue));
