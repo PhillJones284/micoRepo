@@ -1,25 +1,10 @@
 class itemType {
   constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType){
-    this._repoType = repoType;
-    this._repoTitle = repoTitle;
-    this._repoTabTitle = repoTabTitle;
-    this._zenodoType = zenodoType;
-    this._zenodoSubType = zenodoSubType;
-  }
-  get repoType(){
-    return this._repoType;
-  }
-  get repoTitle(){
-    return this._repoTitle;
-  }
-  get repoTabTitle(){
-    return this._repoTabTitle;
-  }
-  get zenodoType(){
-    return this._zenodoType;
-  }
-  get zenodoSubType(){
-    return this._zenodoSubType;
+    this.repoType = repoType;
+    this.repoTitle = repoTitle;
+    this.repoTabTitle = repoTabTitle;
+    this.zenodoType = zenodoType;
+    this.zenodoSubType = zenodoSubType;
   }
 }
 
@@ -72,37 +57,6 @@ const sendPostMessage = () => {
 /////////////////////////////
 // Building the repository//
 ///////////////////////////
-
-const changeColourTabs = (alpha, elem) => {
-  const currBGColor = getComputedStyle(elem)["background-color"];
-  const colorArr = currBGColor.split("(")[1].split(")")[0].split(",");
-  colorArr[3] = alpha;
-  const newBGColor = "rgba("+colorArr.join(",")+")";
-  document.getElementById(elem.id).style.backgroundColor = newBGColor;
-};
-
-const swtichView = (whichTab) => {
-  let allTabElems = document.getElementsByClassName("tabs");
-  allTabElems = Array.from(allTabElems); // convert HTML collection to array
-  allTabElems.map(changeColourTabs.bind(null, " 0.2"));
-
-  const currTabElem = document.getElementById(whichTab+"Tab");
-  changeColourTabs(" 1", currTabElem);
-  const currBGColor = getComputedStyle(currTabElem)["background-color"];
-  document.getElementById("tabLine").style.backgroundColor = currBGColor;
-
-  //Turn off all sections for every type
-  arrOfTypes.map(itemType => {
-    document.getElementById(itemType+"Section").style.display = "none";
-    document.getElementById(itemType+"Tab").style.color = "black";
-  });
-
-  // Turn on the one section for the type we want
-  document.getElementById(whichTab+"Section").style.display = "block";
-  if (whichTab == "article"){
-    document.getElementById(whichTab+"Tab").style.color = "rgb(214,245,245)";
-  }
-};
 
 function buildTabs (type) {
   const tabsRowElem = this.tabsRowElem;
@@ -167,6 +121,41 @@ const buildStructure = () => {
     repoElem: repoElem
   });
 }
+
+///////////////////////////////
+// Functions to change tabs //
+/////////////////////////////
+const changeColourTabs = (alpha, elem) => {
+  const currBGColor = getComputedStyle(elem)["background-color"];
+  const colorArr = currBGColor.split("(")[1].split(")")[0].split(",");
+  colorArr[3] = alpha;
+  const newBGColor = "rgba("+colorArr.join(",")+")";
+  document.getElementById(elem.id).style.backgroundColor = newBGColor;
+};
+
+const swtichView = (whichTab) => {
+  let allTabElems = document.getElementsByClassName("tabs");
+  allTabElems = Array.from(allTabElems); // convert HTML collection to array
+  allTabElems.map(changeColourTabs.bind(null, " 0.2"));
+
+  const currTabElem = document.getElementById(whichTab+"Tab");
+  changeColourTabs(" 1", currTabElem);
+  const currBGColor = getComputedStyle(currTabElem)["background-color"];
+  document.getElementById("tabLine").style.backgroundColor = currBGColor;
+
+  //Turn off all sections for every type
+  arrOfTypes.map(itemType => {
+    document.getElementById(itemType+"Section").style.display = "none";
+    document.getElementById(itemType+"Tab").style.color = "black";
+  });
+
+  // Turn on the one section for the type we want
+  document.getElementById(whichTab+"Section").style.display = "block";
+  if (whichTab == "article"){
+    document.getElementById(whichTab+"Tab").style.color = "rgb(214,245,245)";
+  }
+};
+
 ///////////////////////////////
 // Populating the repository//
 /////////////////////////////
