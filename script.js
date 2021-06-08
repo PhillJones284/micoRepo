@@ -1,5 +1,5 @@
 class itemType {
-  constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType){
+  constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType) {
     this.repoType = repoType;
     this.repoTitle = repoTitle;
     this.repoTabTitle = repoTabTitle;
@@ -8,28 +8,27 @@ class itemType {
   }
 }
 
-const arrOfTypes2 = [
-  new itemType('report','Open Reports','Reports','publication','report'),
-  new itemType('article','Journal articles','Articles',
-    ['publication','publication'],
-    ['article','conferencepaper']),
-  new itemType('presentation','Presentations','Presentations','presentation','')
+const arrOfTypes = [
+  new itemType('report', 'Open Reports', 'Reports', 'publication', 'report'),
+  new itemType('article', 'Journal articles', 'Articles',
+    ['publication', 'publication'],
+    ['article', 'conferencepaper']),
+  new itemType('presentation', 'Presentations', 'Presentations', 'presentation', '')
 ];
 
-const arrOfTypes = ['report', 'article', 'presentation'];
 /*
 To store a local copy of the zenodo API response, set up a CRON job. For example:
 /usr/bin/curl -o /home/<username>/public_html/repository/repodata.json https://zenodo.org/api/records/?communities=<community name>
 */
 const localRepo = true;
 let repoPath;
-if (localRepo === true){
+if (localRepo === true) {
   repoPath = "/repository/repodata.json";
 } else {
   const baseURL = 'https://zenodo.org/api/records/';
   const queryParams = '?communities=';
   const repoName = "morebrains_cooperative";
-  repoPath = baseURL+queryParams+repoName;
+  repoPath = baseURL + queryParams + repoName;
 }
 /*
 Thumbnails for reports should be 311x220 pixels. Name them the second half of the zenodo DOI eg zenodo.3907486.png imgLocation is set up to look in the wordpress image folder. WP must be set NOT to separate images into folders by month.
@@ -58,20 +57,20 @@ const sendPostMessage = () => {
 // Building the repository//
 ///////////////////////////
 
-function buildTabs (type) {
+function buildTabs(type) {
   const tabsRowElem = this.tabsRowElem;
   const tabElem = document.createElement("div");
   tabElem.appendChild(document.createTextNode(type.repoTabTitle));
-  tabElem.id = type.repoType+"Tab";
+  tabElem.id = type.repoType + "Tab";
   tabElem.className = "tabs";
   tabElem.onclick = () => swtichView(type.repoType);
   tabsRowElem.appendChild(tabElem);
 }
 
-function buildEachType (type) {
+function buildEachType(type) {
   const repoElem = this.repoElem;
   const sectionElem = document.createElement("div");
-  sectionElem.id = type.repoType+"Section";
+  sectionElem.id = type.repoType + "Section";
   sectionElem.className = "repoSection";
   sectionElem.style.display = "block";
   repoElem.appendChild(sectionElem);
@@ -82,7 +81,7 @@ function buildEachType (type) {
   sectionElem.appendChild(textElem);
 
   const containerElem = document.createElement("div");
-  containerElem.id = type.repoType+"Container";
+  containerElem.id = type.repoType + "Container";
   containerElem.className = "itemContainer";
   sectionElem.appendChild(containerElem);
 };
@@ -113,11 +112,11 @@ const buildStructure = () => {
   tabLineElem.id = "tabLine";
   tabsRowElem.appendChild(tabLineElem);
 
-  arrOfTypes2.map(buildTabs, {
+  arrOfTypes.map(buildTabs, {
     tabsRowElem: tabsRowElem
   });
 
-  arrOfTypes2.map(buildEachType, {
+  arrOfTypes.map(buildEachType, {
     repoElem: repoElem
   });
 }
@@ -129,7 +128,7 @@ const changeColourTabs = (alpha, elem) => {
   const currBGColor = getComputedStyle(elem)["background-color"];
   const colorArr = currBGColor.split("(")[1].split(")")[0].split(",");
   colorArr[3] = alpha;
-  const newBGColor = "rgba("+colorArr.join(",")+")";
+  const newBGColor = "rgba(" + colorArr.join(",") + ")";
   document.getElementById(elem.id).style.backgroundColor = newBGColor;
 };
 
@@ -138,21 +137,21 @@ const swtichView = (whichTab) => {
   allTabElems = Array.from(allTabElems); // convert HTML collection to array
   allTabElems.map(changeColourTabs.bind(null, " 0.2"));
 
-  const currTabElem = document.getElementById(whichTab+"Tab");
+  const currTabElem = document.getElementById(whichTab + "Tab");
   changeColourTabs(" 1", currTabElem);
   const currBGColor = getComputedStyle(currTabElem)["background-color"];
   document.getElementById("tabLine").style.backgroundColor = currBGColor;
 
   //Turn off all sections for every type
   arrOfTypes.map(itemType => {
-    document.getElementById(itemType+"Section").style.display = "none";
-    document.getElementById(itemType+"Tab").style.color = "black";
+    document.getElementById(itemType.repoType + "Section").style.display = "none";
+    document.getElementById(itemType.repoType + "Tab").style.color = "black";
   });
 
   // Turn on the one section for the type we want
-  document.getElementById(whichTab+"Section").style.display = "block";
-  if (whichTab == "article"){
-    document.getElementById(whichTab+"Tab").style.color = "rgb(214,245,245)";
+  document.getElementById(whichTab + "Section").style.display = "block";
+  if (whichTab == "article") {
+    document.getElementById(whichTab + "Tab").style.color = "rgb(214,245,245)";
   }
 };
 
@@ -173,17 +172,17 @@ const nameTag = (creator) => {
 const stitchJnlYear = (metadata) => {
   // writes the year of publicaiton after the journal name for articles
   let finalString = "Published";
-  if ("journal" in metadata){
+  if ("journal" in metadata) {
     const journal = metadata.journal;
-    if ("title" in journal){
+    if ("title" in journal) {
       finalString = journal.title;
     } else {
       console.log("Warning: no journal title for " + metadata.title);
-    } 
+    }
   } else {
     console.log("Warning: No journal record for " + metadata.title);
   }
-  if ("publication_date" in metadata){
+  if ("publication_date" in metadata) {
     const year = metadata.publication_date.split("-")[0];
     finalString = finalString + " (" + year + ")";
   }
@@ -217,17 +216,17 @@ const changeItemData = (itemData, ID) => {
   if (typeof (doiDIV) != "undefined") { doiDIV.innerHTML = linkedDOI }
 };
 
-const buildType = (typeFilterValue,x) => {
+const buildType = (repoType, x) => {
   // This function buids the structure of each item in the repository
   // It's being looped over each item in a given type
-  const this_ID = typeFilterValue+"Box"+x;
-  const parentElem = document.getElementById(typeFilterValue+"Container");
+  const this_ID = repoType + "Box" + x;
+  const parentElem = document.getElementById(repoType + "Container");
   // create the element box for each item
   const elem = document.createElement("div");
   elem.id = this_ID;
   elem.className = "itemBox";
   parentElem.appendChild(elem);
-  if (typeFilterValue != "article"){
+  if (repoType != "article") {
     const thumbBoxElem = document.createElement("div");
     thumbBoxElem.className = "thumbBox";
     elem.appendChild(thumbBoxElem);
@@ -237,7 +236,7 @@ const buildType = (typeFilterValue,x) => {
   titleBoxElem.className = "itemTitle";
   elem.appendChild(titleBoxElem);
   // create journal title box if an article
-  if (typeFilterValue == "article"){
+  if (repoType == "article") {
     const JnlTitleElemName = document.createElement("div");
     JnlTitleElemName.className = "itemJnlTitle";
     elem.appendChild(JnlTitleElemName);
@@ -250,61 +249,65 @@ const buildType = (typeFilterValue,x) => {
   const doiElem = document.createElement("div");
   doiElem.className = "itemDOI";
   elem.appendChild(doiElem);
-  return(this_ID);
+  return (this_ID);
 };
-const buildPage = (filteredStuffInZenodo, typeFilterValue) => {
+
+const buildPage = (filteredStuffInZenodo, repoType) => {
   // Build the DOM objects so there is one object per repo item
   // Gives new DIV a unique DOM ID
   const numberOfHits = filteredStuffInZenodo.length;
   // Create an array of element IDs for each item type
   // .keys returns the indexes of an array which are used as
   // an enumerator for the item box ID names EG articleBox0, articleBox1, etc
-  const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(buildType.bind(null,typeFilterValue));
+  const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(buildType.bind(null, repoType));
   // Put the metadata from the api call into the boxes we just built
-  filteredStuffInZenodo.map((item,index) => {
-    changeItemData(item,itemBoxIDs[index]);
+  filteredStuffInZenodo.map((item, index) => {
+    changeItemData(item, itemBoxIDs[index]);
   });
 };
-const typeExtract = (typeFilterValue, x) => {
-  // The filter function returns true if the item type is equal to the current one
-  let type = x.metadata.resource_type.type;
-  let subType = x.metadata.resource_type.subtype;
-  if (typeof (subType) != "undefined") {
-    // Force conference papers be treated like journal articles (Hacky, probably not the best way)
-    if (subType == "conferencepaper"){
-      x.metadata.resource_type.subtype = "article";
-    }
-    type = subType; // Not all types in zenodo have subtypes
+
+function typeExtract (item) {
+  const typeToMatch = [this.typeObjFilt.zenodoType,this.typeObjFilt.zenodoSubType];
+  const typeOfItem = [item.metadata.resource_type.type, item.metadata.resource_type.subtype];
+  if (Array.isArray(typeToMatch[0])){
+    let transposedTypeToMatch = typeToMatch[0].map((x,i) => typeToMatch.map(x => x[i]));
+    transposedTypeToMatch = transposedTypeToMatch.map(x => x.join());
+    return (transposedTypeToMatch.includes(typeOfItem.join()));
   }
-  return (type == typeFilterValue);
-}
-const filter = (stuffInZenodo) => {
+  return (typeToMatch.join() == typeOfItem.join())
+};
+
+const sortAndFilter = (stuffInZenodo) => {
   // This function filters down to the types of entries we want to display
   // Sort the items by date
-  const hits = stuffInZenodo.hits.hits.sort(function(a,b) {
+  const hits = stuffInZenodo.hits.hits.sort(function (a, b) {
     const keyA = new Date(a.metadata.publication_date);
     const keyB = new Date(b.metadata.publication_date);
     return (keyB - keyA);
   });
   // It loops over the item types so they can be displayed one at a time
-  arrOfTypes.map(typeFilterValue => {
-    const filteredStuffInZenodo = hits.filter(typeExtract.bind(null,typeFilterValue));
-    buildPage(filteredStuffInZenodo, typeFilterValue);
+
+  arrOfTypes.map(typeObjFilt => {
+    const filteredStuffInZenodo = hits.filter(typeExtract,{typeObjFilt:typeObjFilt});
+    //console.log(filteredStuffInZenodo);
+    buildPage(filteredStuffInZenodo,typeObjFilt.repoType);
   });
 };
 
 const callZenodo = async () => {
   try {
     const response = await fetch(repoPath);
-    if (response.ok){
+    if (response.ok) {
       const stuffInZenodo = await response.json();
-      filter(stuffInZenodo);
+      sortAndFilter(stuffInZenodo);
+      swtichView(arrOfTypes[0].repoType);
       document.getElementById("loadingScreen").remove();
       document.getElementById("repo").style.display = "block";
-    } 
-  } catch(error){
+    }
+  } catch (error) {
     console.log(error);
   }
 };
+
 buildStructure();
 callZenodo();
