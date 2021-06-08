@@ -90,6 +90,7 @@
 .itemAuthors, .itemDOI, .itemJnlTitle{
   font-family: Lato, Helvetica, sans-serif;
   margin: 0.1em 0.1em 0.2em 0.1em;
+  line-height: 120%;
 }
 
 a{
@@ -104,12 +105,12 @@ a{
 .itemJnlTitle{
   color: #4D4E50;
   font-size: 0.9em;
+  margin: 1em auto;
 }
 
 .itemAuthors{
   font-size: 0.8em;
   min-height: 3em;
-  line-height: 120%;
 }
 
 .itemAuthors a{
