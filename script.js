@@ -1,19 +1,20 @@
 class itemType {
-  constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType) {
+  constructor(repoType, repoTitle, repoTabTitle, zenodoType, zenodoSubType, tabColour) {
     this.repoType = repoType;
     this.repoTitle = repoTitle;
     this.repoTabTitle = repoTabTitle;
     this.zenodoType = zenodoType;
     this.zenodoSubType = zenodoSubType;
+    this.tabColour = tabColour;
   }
 }
 
 const arrOfTypes = [
-  new itemType('report', 'Open Reports', 'Reports', 'publication', 'report'),
+  new itemType('report', 'Open Reports', 'Reports', 'publication', 'report','rgb(48,134,147)'),
   new itemType('article', 'Journal articles', 'Articles',
     ['publication', 'publication'],
-    ['article', 'conferencepaper']),
-  new itemType('presentation', 'Presentations', 'Presentations', 'presentation', '')
+    ['article', 'conferencepaper'], 'rgb(75,75,80)'),
+  new itemType('presentation', 'Presentations', 'Presentations', 'presentation', '', 'rgb(111,136,47)')
 ];
 
 /*
@@ -63,7 +64,7 @@ function buildTabs(type) {
   tabElem.appendChild(document.createTextNode(type.repoTabTitle));
   tabElem.id = type.repoType + "Tab";
   tabElem.className = "tabs";
-  tabElem.onclick = () => swtichView(type.repoType);
+  tabElem.onclick = () => switchView(type);
   tabsRowElem.appendChild(tabElem);
 }
 
@@ -124,35 +125,34 @@ const buildStructure = () => {
 ///////////////////////////////
 // Functions to change tabs //
 /////////////////////////////
-const changeColourTabs = (alpha, elem) => {
-  const currBGColor = getComputedStyle(elem)["background-color"];
-  const colorArr = currBGColor.split("(")[1].split(")")[0].split(",");
-  colorArr[3] = alpha;
-  const newBGColor = "rgba(" + colorArr.join(",") + ")";
-  document.getElementById(elem.id).style.backgroundColor = newBGColor;
-};
 
-const swtichView = (whichTab) => {
-  let allTabElems = document.getElementsByClassName("tabs");
-  allTabElems = Array.from(allTabElems); // convert HTML collection to array
-  allTabElems.map(changeColourTabs.bind(null, " 0.2"));
+function changeTabsAndType (type,index) {
+  // Get IDs for the tab and section
+  elemTab = document.getElementById(type.repoType+"Tab");
+  elemSection = document.getElementById(type.repoType+"Section");
+  // Calculate the 'off' colours (Lighter than the base colours)
+  const baseColor = arrOfTypes[index].tabColour;
+  const baseColorArr = baseColor.split("(")[1].split(")")[0].split(",");
+  const newColorArr = baseColorArr.map(x => Math.round(255-((255-x)/4)));
+  const newBGColor = "rgb(" + newColorArr.join(",") + ")";
+  // Set the off colours
+  elemTab.style.backgroundColor = newBGColor;
+  elemTab.style.color = "rgb(77,78,80)";
+  // Turn off all sections
+  elemSection.style.display = "none";
+}
 
-  const currTabElem = document.getElementById(whichTab + "Tab");
-  changeColourTabs(" 1", currTabElem);
-  const currBGColor = getComputedStyle(currTabElem)["background-color"];
-  document.getElementById("tabLine").style.backgroundColor = currBGColor;
-
-  //Turn off all sections for every type
-  arrOfTypes.map(itemType => {
-    document.getElementById(itemType.repoType + "Section").style.display = "none";
-    document.getElementById(itemType.repoType + "Tab").style.color = "black";
-  });
-
+const switchView = (whichType) => {
+  // Change colours to off colours and turn off all the sections
+  arrOfTypes.map(changeTabsAndType);
+  // Define the tab we want
+  const currTabElem = document.getElementById(whichType.repoType + "Tab");
+  // Set colours for the tabs we want
+  currTabElem.style.backgroundColor = whichType.tabColour;
+  document.getElementById("tabLine").style.backgroundColor = whichType.tabColour;
+  document.getElementById(whichType.repoType + "Tab").style.color = "white";
   // Turn on the one section for the type we want
-  document.getElementById(whichTab + "Section").style.display = "block";
-  if (whichTab == "article") {
-    document.getElementById(whichTab + "Tab").style.color = "rgb(214,245,245)";
-  }
+  document.getElementById(whichType.repoType + "Section").style.display = "block";
 };
 
 ///////////////////////////////
@@ -277,7 +277,7 @@ function typeExtract (item) {
   return (typeToMatch.join() == typeOfItem.join())
 };
 
-const sortAndFilter = (stuffInZenodo) => {
+const sortAndGroup = (stuffInZenodo) => {
   // This function filters down to the types of entries we want to display
   // Sort the items by date
   const hits = stuffInZenodo.hits.hits.sort(function (a, b) {
@@ -299,8 +299,8 @@ const callZenodo = async () => {
     const response = await fetch(repoPath);
     if (response.ok) {
       const stuffInZenodo = await response.json();
-      sortAndFilter(stuffInZenodo);
-      swtichView(arrOfTypes[0].repoType);
+      sortAndGroup(stuffInZenodo);
+      switchView(arrOfTypes[0]);
       document.getElementById("loadingScreen").remove();
       document.getElementById("repo").style.display = "block";
     }

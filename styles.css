@@ -30,7 +30,6 @@
   display: inline-block;
   text-align: center;
   font-family: Lato, Helvetica, sans-serif;
-  color: black;
   width: 10em;
   padding-bottom: 0.2em;
   margin: 0 4px 0 0;
@@ -41,19 +40,6 @@
 #tabLine{
   width: 100%;
   height: 0.5em;
-  background-color: rgb(51, 204, 204);
-}
-
-#reportTab{
-  background-color: rgb(51, 204, 204);
-}
-
-#articleTab{
-  background-color: rgba(77, 78, 80, 0.2);
-}
-
-#presentationTab{
-  background-color: rgba(111, 136, 47, 0.2);
 }
 
 .itemContainer{
