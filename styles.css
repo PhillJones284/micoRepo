@@ -45,15 +45,22 @@
 .itemContainer{
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: stretch;
 }
 
+
 .itemBox{
-  margin: 0.5em;
-  padding: 1em 0.5em 0.5em 0.5em;
-  width: 15em;
+  margin: 1em;
+  padding: 1em;
+  width: 17em;
   background-color: rgb(240, 240, 240);
+}
+
+@media (max-width:935px){
+  .itemBox{
+    width: 80%;
+  }
 }
 
 .thumbBox{
@@ -73,7 +80,7 @@
   line-height: 120%;
 }
 
-.itemAuthors, .itemDOI, .itemJnlTitle{
+.itemAuthors, .itemDOI, .itemJnlTitle, .itemConfTitle{
   font-family: Lato, Helvetica, sans-serif;
   margin: 0.1em 0.1em 0.2em 0.1em;
   line-height: 120%;
@@ -88,7 +95,7 @@ a{
   font-style: italic;
 }
 
-.itemJnlTitle{
+.itemJnlTitle, .itemConfTitle{
   color: #4D4E50;
   font-size: 0.9em;
   margin: 1em auto;

@@ -11,7 +11,7 @@ class itemType {
 
 const arrOfTypes = [
   new itemType('report', 'Open Reports', 'Reports', 'publication', 'report','rgb(48,134,147)'),
-  new itemType('article', 'Journal articles', 'Articles',
+  new itemType('article', 'Journal articles / Conference proceedings', 'Articles',
     ['publication', 'publication'],
     ['article', 'conferencepaper'], 'rgb(75,75,80)'),
   new itemType('presentation', 'Presentations', 'Presentations', 'presentation', '', 'rgb(111,136,47)')
@@ -168,7 +168,8 @@ const nameTag = (creator) => {
     return (nameWithLink);
   }
   return (newName);
-}
+};
+
 const stitchJnlYear = (metadata) => {
   // writes the year of publicaiton after the journal name for articles
   let finalString = "Published";
@@ -186,6 +187,26 @@ const stitchJnlYear = (metadata) => {
     const year = metadata.publication_date.split("-")[0];
     finalString = finalString + " (" + year + ")";
   }
+  finalString = "<em>Published in</em></Br>"+finalString
+  return finalString;
+};
+
+const buildConfTitle = (metadata) => {
+  let finalString = "Conference";
+  if ("meeting" in metadata) {
+    const meeting = metadata.meeting;
+    if ("title" in meeting){
+      finalString = "<em>Proceedings of</em></Br>"+meeting.title;
+    } else {
+      console.log("Warning: no conference title for " + metadata.title);
+    }
+  } else {
+    console.log("Warning: No conference record for " + metadata.title);
+  }
+  if ("publication_date" in metadata) {
+    const year = metadata.publication_date.split("-")[0];
+    finalString = finalString + " (" + year + ")";
+  }
   return finalString;
 };
 
@@ -194,6 +215,7 @@ const changeItemData = (itemData, ID) => {
   const elem = document.getElementById(ID);
   const imgDIV = elem.getElementsByClassName("thumbBox")[0];
   const titleDIV = elem.getElementsByClassName("itemTitle")[0];
+  const confTitleDIV = elem.getElementsByClassName("itemConfTitle")[0];
   const jnlTitleDIV = elem.getElementsByClassName("itemJnlTitle")[0];
   const authorDIV = elem.getElementsByClassName("itemAuthors")[0];
   const doiDIV = elem.getElementsByClassName("itemDOI")[0];
@@ -205,13 +227,15 @@ const changeItemData = (itemData, ID) => {
   const linkedIMG = '<a href="' + itemData.links.html + '" target="_blank">'
     + '<img src="' + imgLocation + imgFileName + '.png"'
     + 'onerror="this.src = &quot;' + backupFileName + '&quot;"> </a>';
+  console.log(itemData.metadata);
   const linkedTitle = '<a href="' + itemData.links.html + '" target="_blank">' + itemData.metadata.title + '</a>';
   const linkedAuthors = itemData.metadata.creators.map(nameTag).join(", ");
   const linkedDOI = '<a href="' + itemData.links.doi + '" target="_blank">DOI: ' + itemData.doi + '</a>';
   // Replace content with real article data
   if (typeof (imgDIV) != "undefined") { imgDIV.innerHTML = linkedIMG }
-  if (typeof (titleDIV) != "undefined") { titleDIV.innerHTML = linkedTitle }
-  if (typeof (jnlTitleDIV) != "undefined") { jnlTitleDIV.innerHTML = stitchJnlYear(itemData.metadata) }
+  if (typeof itemData.metadata.title != "undefined") { titleDIV.innerHTML = linkedTitle }
+  if (typeof itemData.metadata.meeting != "undefined") { confTitleDIV.innerHTML = buildConfTitle(itemData.metadata) }
+  if (typeof itemData.metadata.journal != "undefined") { jnlTitleDIV.innerHTML = stitchJnlYear(itemData.metadata) }
   if (typeof (authorDIV) != "undefined") { authorDIV.innerHTML = linkedAuthors }
   if (typeof (doiDIV) != "undefined") { doiDIV.innerHTML = linkedDOI }
 };
@@ -235,11 +259,23 @@ const buildType = (repoType, x) => {
   const titleBoxElem = document.createElement("div");
   titleBoxElem.className = "itemTitle";
   elem.appendChild(titleBoxElem);
+  // Create a conference title box
+  if (repoType == "article") {
+    const confLabelElemName = document.createElement("div");
+    confLabelElemName.className = "itemConfLabel";
+    elem.appendChild(confLabelElemName);
+    const confTitleElemName = document.createElement("div");
+    confTitleElemName.className = "itemConfTitle";
+    elem.appendChild(confTitleElemName);
+  }
   // create journal title box if an article
   if (repoType == "article") {
-    const JnlTitleElemName = document.createElement("div");
-    JnlTitleElemName.className = "itemJnlTitle";
-    elem.appendChild(JnlTitleElemName);
+    const jnlLabelElemName = document.createElement("div");
+    jnlLabelElemName.className = "itemJnlLabel";
+    elem.appendChild(jnlLabelElemName);
+    const jnlTitleElemName = document.createElement("div");
+    jnlTitleElemName.className = "itemJnlTitle";
+    elem.appendChild(jnlTitleElemName);
   }
   // Create Author box
   const authorElem = document.createElement("div");
@@ -267,7 +303,7 @@ const buildPage = (filteredStuffInZenodo, repoType) => {
 };
 
 function typeExtract (item) {
-  const typeToMatch = [this.typeObjFilt.zenodoType,this.typeObjFilt.zenodoSubType];
+  const typeToMatch = [this.type.zenodoType,this.type.zenodoSubType];
   const typeOfItem = [item.metadata.resource_type.type, item.metadata.resource_type.subtype];
   if (Array.isArray(typeToMatch[0])){
     let transposedTypeToMatch = typeToMatch[0].map((x,i) => typeToMatch.map(x => x[i]));
@@ -280,17 +316,15 @@ function typeExtract (item) {
 const sortAndGroup = (stuffInZenodo) => {
   // This function filters down to the types of entries we want to display
   // Sort the items by date
-  const hits = stuffInZenodo.hits.hits.sort(function (a, b) {
+  const hits = stuffInZenodo.hits.hits.sort((a, b) => {
     const keyA = new Date(a.metadata.publication_date);
     const keyB = new Date(b.metadata.publication_date);
     return (keyB - keyA);
   });
-  // It loops over the item types so they can be displayed one at a time
-
-  arrOfTypes.map(typeObjFilt => {
-    const filteredStuffInZenodo = hits.filter(typeExtract,{typeObjFilt:typeObjFilt});
-    //console.log(filteredStuffInZenodo);
-    buildPage(filteredStuffInZenodo,typeObjFilt.repoType);
+  // Loop over the item types so they can be displayed one at a time
+  arrOfTypes.map(type => {
+    const filteredStuffInZenodo = hits.filter(typeExtract,{type:type});
+    buildPage(filteredStuffInZenodo,type.repoType);
   });
 };
 
