@@ -1,6 +1,7 @@
 #repoInsert h1{
   font-family: "Noto Sans JP", Helvetica, sans-serif;
   margin-top: 1em;
+  font-size: 2em;
 }
 
 #loadingScreen{
@@ -132,6 +133,9 @@ a{
     }
     .itemBox{
       width: 100%;
+    }
+    #repoInsert h1{
+      font-size: 1em;
     }
 }
 
