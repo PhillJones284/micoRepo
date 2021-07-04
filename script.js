@@ -227,7 +227,6 @@ const changeItemData = (itemData, ID) => {
   const linkedIMG = '<a href="' + itemData.links.html + '" target="_blank">'
     + '<img src="' + imgLocation + imgFileName + '.png"'
     + 'onerror="this.src = &quot;' + backupFileName + '&quot;"> </a>';
-  console.log(itemData.metadata);
   const linkedTitle = '<a href="' + itemData.links.html + '" target="_blank">' + itemData.metadata.title + '</a>';
   const linkedAuthors = itemData.metadata.creators.map(nameTag).join(", ");
   const linkedDOI = '<a href="' + itemData.links.doi + '" target="_blank">DOI: ' + itemData.doi + '</a>';
@@ -240,10 +239,10 @@ const changeItemData = (itemData, ID) => {
   if (typeof (doiDIV) != "undefined") { doiDIV.innerHTML = linkedDOI }
 };
 
-const buildType = (repoType, x) => {
+const buildType = (repoType, itemNumber) => {
   // This function buids the structure of each item in the repository
   // It's being looped over each item in a given type
-  const this_ID = repoType + "Box" + x;
+  const this_ID = repoType + "Box" + itemNumber;
   const parentElem = document.getElementById(repoType + "Container");
   // create the element box for each item
   const elem = document.createElement("div");
@@ -295,15 +294,14 @@ const buildPage = (filteredStuffInZenodo, repoType) => {
   // Create an array of element IDs for each item type
   // .keys returns the indexes of an array which are used as
   // an enumerator for the item box ID names EG articleBox0, articleBox1, etc
-  const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(buildType.bind(null, repoType));
+  //const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(buildType.bind(null, repoType));
+  const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(itemNumber => buildType(repoType,itemNumber));
   // Put the metadata from the api call into the boxes we just built
-  filteredStuffInZenodo.map((item, index) => {
-    changeItemData(item, itemBoxIDs[index]);
-  });
+  filteredStuffInZenodo.map((item, index) => changeItemData(item, itemBoxIDs[index]));
 };
 
-function typeExtract (item) {
-  const typeToMatch = [this.type.zenodoType,this.type.zenodoSubType];
+const typeExtract = (item,type) => {
+  const typeToMatch = [type.zenodoType,type.zenodoSubType];
   const typeOfItem = [item.metadata.resource_type.type, item.metadata.resource_type.subtype];
   if (Array.isArray(typeToMatch[0])){
     let transposedTypeToMatch = typeToMatch[0].map((x,i) => typeToMatch.map(x => x[i]));
@@ -323,7 +321,7 @@ const sortAndGroup = (stuffInZenodo) => {
   });
   // Loop over the item types so they can be displayed one at a time
   arrOfTypes.map(type => {
-    const filteredStuffInZenodo = hits.filter(typeExtract,{type:type});
+    const filteredStuffInZenodo = hits.filter(item => typeExtract(item,type));
     buildPage(filteredStuffInZenodo,type.repoType);
   });
 };
