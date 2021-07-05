@@ -58,8 +58,7 @@ const sendPostMessage = () => {
 // Building the repository//
 ///////////////////////////
 
-function buildTabs(type) {
-  const tabsRowElem = this.tabsRowElem;
+const buildTabs = (type, tabsRowElem) => {
   const tabElem = document.createElement("div");
   tabElem.appendChild(document.createTextNode(type.repoTabTitle));
   tabElem.id = type.repoType + "Tab";
@@ -68,8 +67,7 @@ function buildTabs(type) {
   tabsRowElem.appendChild(tabElem);
 }
 
-function buildEachType(type) {
-  const repoElem = this.repoElem;
+const buildEachType = (type, repoElem) => {
   const sectionElem = document.createElement("div");
   sectionElem.id = type.repoType + "Section";
   sectionElem.className = "repoSection";
@@ -113,20 +111,16 @@ const buildStructure = () => {
   tabLineElem.id = "tabLine";
   tabsRowElem.appendChild(tabLineElem);
 
-  arrOfTypes.map(buildTabs, {
-    tabsRowElem: tabsRowElem
-  });
+  arrOfTypes.map(type => buildTabs(type,tabsRowElem));
 
-  arrOfTypes.map(buildEachType, {
-    repoElem: repoElem
-  });
+  arrOfTypes.map(type => buildEachType(type,repoElem));
 }
 
 ///////////////////////////////
 // Functions to change tabs //
 /////////////////////////////
 
-function changeTabsAndType (type,index) {
+const changeTabsAndType = (type,index) => {
   // Get IDs for the tab and section
   elemTab = document.getElementById(type.repoType+"Tab");
   elemSection = document.getElementById(type.repoType+"Section");
@@ -200,13 +194,17 @@ const buildConfTitle = (metadata) => {
     } else {
       console.log("Warning: no conference title for " + metadata.title);
     }
+    if ("dates" in meeting) {
+      const year = meeting.dates;
+      finalString = finalString + "</Br>(" + year + ")";
+    }
   } else {
     console.log("Warning: No conference record for " + metadata.title);
   }
-  if ("publication_date" in metadata) {
+  /*if ("publication_date" in metadata) {
     const year = metadata.publication_date.split("-")[0];
     finalString = finalString + " (" + year + ")";
-  }
+  }*/
   return finalString;
 };
 
@@ -235,8 +233,8 @@ const changeItemData = (itemData, ID) => {
   if (typeof itemData.metadata.title != "undefined") { titleDIV.innerHTML = linkedTitle }
   if (typeof itemData.metadata.meeting != "undefined") { confTitleDIV.innerHTML = buildConfTitle(itemData.metadata) }
   if (typeof itemData.metadata.journal != "undefined") { jnlTitleDIV.innerHTML = stitchJnlYear(itemData.metadata) }
-  if (typeof (authorDIV) != "undefined") { authorDIV.innerHTML = linkedAuthors }
-  if (typeof (doiDIV) != "undefined") { doiDIV.innerHTML = linkedDOI }
+  if (typeof itemData.metadata.creators != "undefined") { authorDIV.innerHTML = linkedAuthors }
+  if (typeof itemData.links.doi != "undefined") { doiDIV.innerHTML = linkedDOI }
 };
 
 const buildType = (repoType, itemNumber) => {
@@ -259,23 +257,23 @@ const buildType = (repoType, itemNumber) => {
   titleBoxElem.className = "itemTitle";
   elem.appendChild(titleBoxElem);
   // Create a conference title box
-  if (repoType == "article") {
+  //if (repoType == "article") {
     const confLabelElemName = document.createElement("div");
     confLabelElemName.className = "itemConfLabel";
     elem.appendChild(confLabelElemName);
     const confTitleElemName = document.createElement("div");
     confTitleElemName.className = "itemConfTitle";
     elem.appendChild(confTitleElemName);
-  }
+  //}
   // create journal title box if an article
-  if (repoType == "article") {
+  //if (repoType == "article") {
     const jnlLabelElemName = document.createElement("div");
     jnlLabelElemName.className = "itemJnlLabel";
     elem.appendChild(jnlLabelElemName);
     const jnlTitleElemName = document.createElement("div");
     jnlTitleElemName.className = "itemJnlTitle";
     elem.appendChild(jnlTitleElemName);
-  }
+  //}
   // Create Author box
   const authorElem = document.createElement("div");
   authorElem.className = "itemAuthors";
