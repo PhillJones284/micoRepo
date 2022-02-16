@@ -24,7 +24,7 @@ To store a local copy of the zenodo API response, set up a CRON job. For example
 const localRepo = true;
 let repoPath;
 if (localRepo === true) {
-  repoPath = "/repository/repodata.json";
+  repoPath = "/microRepo/repodata.json";
 } else {
   const baseURL = 'https://zenodo.org/api/records/';
   const queryParams = '?communities=';
