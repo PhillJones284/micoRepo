@@ -18,6 +18,7 @@ const arrOfTypes = [
 ];
 
 /*
+
 To store a local copy of the zenodo API response, set up a CRON job. For example:
 /usr/bin/curl -o /home/<username>/public_html/repository/repodata.json https://zenodo.org/api/records/?communities=<community name>
 */
