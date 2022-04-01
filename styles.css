@@ -1,5 +1,5 @@
 #repoInsert h1{
-  font-family: "Noto Sans JP", Helvetica, sans-serif;
+  font-family: "Noto Sans JP", "Times New Roman";
   margin-top: 1em;
   font-size: 2em;
 }
@@ -68,8 +68,9 @@
 }
 
 .itemTitle{
-  font-family: "Noto Sans JP", Helvetica, sans-serif;
-  font-size: 1em;
+  font-family: "Lato", Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 0.8em;
   margin: 0.1em 0.1em 0.3em 0.1em;
   min-height: 3em;
   line-height: 120%;
@@ -86,29 +87,34 @@ a{
 }
 
 .itemTitle a{
-  color: rgb(75, 71, 193);
-  font-style: italic;
+  /*color: rgb(75, 71, 193);*/
+  color: black;
+  /*font-style: italic;*/
 }
 
 .itemJnlTitle, .itemConfTitle{
   color: #4D4E50;
-  font-size: 0.9em;
+  font-size: 0.75em;
   margin: 1em auto;
 }
 
 .itemAuthors{
-  font-size: 0.8em;
+  font-size: 0.75em;
   min-height: 3em;
 }
 
 .itemAuthors a{
-  font-weight: 600;
+  font-weight: 400;
   color: #6F882F;
 }
 
-.itemDOI a{
-  color: #000000;
+.itemDOI{
+  color: rgb(75, 71, 193);
   font-size: 0.8em;
+}
+
+.itemDOI a{
+  font-style: italic;
 }
 
 @media only screen

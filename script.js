@@ -87,7 +87,6 @@ const buildEachType = (type, repoElem) => {
 };
 
 const buildStructure = () => {
-
   const topElem = document.getElementById("repoInsert");
   const loadingScreenElem = document.createElement("div");
   loadingScreenElem.id = "loadingScreen";
@@ -180,9 +179,9 @@ const stitchJnlYear = (metadata) => {
   }
   if ("publication_date" in metadata) {
     const year = metadata.publication_date.split("-")[0];
-    finalString = finalString + " (" + year + ")";
+    finalString = "<em>"+finalString +"</em>"+ " (" + year + ")";
   }
-  finalString = "<em>Published in</em></Br>"+finalString
+  finalString = "Published in</Br>"+finalString
   return finalString;
 };
 
@@ -214,9 +213,9 @@ const changeItemData = (itemData, ID) => {
   const elem = document.getElementById(ID);
   const imgDIV = elem.getElementsByClassName("thumbBox")[0];
   const titleDIV = elem.getElementsByClassName("itemTitle")[0];
+  const authorDIV = elem.getElementsByClassName("itemAuthors")[0];
   const confTitleDIV = elem.getElementsByClassName("itemConfTitle")[0];
   const jnlTitleDIV = elem.getElementsByClassName("itemJnlTitle")[0];
-  const authorDIV = elem.getElementsByClassName("itemAuthors")[0];
   const doiDIV = elem.getElementsByClassName("itemDOI")[0];
   // Authors are in the Zendodo data structure as an array of objects
   // break the names out and join them as a single string
@@ -228,13 +227,13 @@ const changeItemData = (itemData, ID) => {
     + 'onerror="this.src = &quot;' + backupFileName + '&quot;"> </a>';
   const linkedTitle = '<a href="' + itemData.links.html + '" target="_blank">' + itemData.metadata.title + '</a>';
   const linkedAuthors = itemData.metadata.creators.map(nameTag).join(", ");
-  const linkedDOI = '<a href="' + itemData.links.doi + '" target="_blank">DOI: ' + itemData.doi + '</a>';
+  const linkedDOI = 'DOI: <a href="' + itemData.links.doi + '" target="_blank">' + itemData.doi + '</a>';
   // Replace content with real article data
   if (typeof (imgDIV) != "undefined") { imgDIV.innerHTML = linkedIMG }
   if (typeof itemData.metadata.title != "undefined") { titleDIV.innerHTML = linkedTitle }
+  if (typeof itemData.metadata.creators != "undefined") { authorDIV.innerHTML = linkedAuthors }
   if (typeof itemData.metadata.meeting != "undefined") { confTitleDIV.innerHTML = buildConfTitle(itemData.metadata) }
   if (typeof itemData.metadata.journal != "undefined") { jnlTitleDIV.innerHTML = stitchJnlYear(itemData.metadata) }
-  if (typeof itemData.metadata.creators != "undefined") { authorDIV.innerHTML = linkedAuthors }
   if (typeof itemData.links.doi != "undefined") { doiDIV.innerHTML = linkedDOI }
 };
 
@@ -257,7 +256,11 @@ const buildType = (repoType, itemNumber) => {
   const titleBoxElem = document.createElement("div");
   titleBoxElem.className = "itemTitle";
   elem.appendChild(titleBoxElem);
-  // Create a conference title box
+  // Create Author box
+  const authorElem = document.createElement("div");
+  authorElem.className = "itemAuthors";
+  elem.appendChild(authorElem);
+  // Create a conference title box. This used to be conditional on content type, changed because making it conditional is unneccersary
   //if (repoType == "article") {
     const confLabelElemName = document.createElement("div");
     confLabelElemName.className = "itemConfLabel";
@@ -266,7 +269,7 @@ const buildType = (repoType, itemNumber) => {
     confTitleElemName.className = "itemConfTitle";
     elem.appendChild(confTitleElemName);
   //}
-  // create journal title box if an article
+  // create journal title box. This used to be conditional on content type, changed because making it conditional is unneccersary
   //if (repoType == "article") {
     const jnlLabelElemName = document.createElement("div");
     jnlLabelElemName.className = "itemJnlLabel";
@@ -275,10 +278,6 @@ const buildType = (repoType, itemNumber) => {
     jnlTitleElemName.className = "itemJnlTitle";
     elem.appendChild(jnlTitleElemName);
   //}
-  // Create Author box
-  const authorElem = document.createElement("div");
-  authorElem.className = "itemAuthors";
-  elem.appendChild(authorElem);
   // Create DOI box
   const doiElem = document.createElement("div");
   doiElem.className = "itemDOI";
