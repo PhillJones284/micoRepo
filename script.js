@@ -112,9 +112,9 @@ const buildStructure = () => {
   tabLineElem.id = "tabLine";
   tabsRowElem.appendChild(tabLineElem);
 
-  arrOfTypes.map(type => buildTabs(type,tabsRowElem));
+  arrOfTypes.forEach(type => buildTabs(type,tabsRowElem));
 
-  arrOfTypes.map(type => buildEachType(type,repoElem));
+  arrOfTypes.forEach(type => buildEachType(type,repoElem));
 }
 
 ///////////////////////////////
