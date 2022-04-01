@@ -139,7 +139,7 @@ const changeTabsAndType = (type,index) => {
 
 const switchView = (whichType) => {
   // Change colours to off colours and turn off all the sections
-  arrOfTypes.map(changeTabsAndType);
+  arrOfTypes.forEach(changeTabsAndType);
   // Define the tab we want
   const currTabElem = document.getElementById(whichType.repoType + "Tab");
   // Set colours for the tabs we want
@@ -210,7 +210,7 @@ const buildConfTitle = (metadata) => {
 };
 
 const changeItemData = (itemData, ID) => {
-  // get the IDs for the compenents that will be updated
+  // get the DOM elements for the compenents that will be updated
   const elem = document.getElementById(ID);
   const imgDIV = elem.getElementsByClassName("thumbBox")[0];
   const titleDIV = elem.getElementsByClassName("itemTitle")[0];
@@ -293,10 +293,9 @@ const buildPage = (filteredStuffInZenodo, repoType) => {
   // Create an array of element IDs for each item type
   // .keys returns the indexes of an array which are used as
   // an enumerator for the item box ID names EG articleBox0, articleBox1, etc
-  //const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(buildType.bind(null, repoType));
   const itemBoxIDs = Array.from(Array(numberOfHits).keys()).map(itemNumber => buildType(repoType,itemNumber));
   // Put the metadata from the api call into the boxes we just built
-  filteredStuffInZenodo.map((item, index) => changeItemData(item, itemBoxIDs[index]));
+  filteredStuffInZenodo.forEach((item, index) => changeItemData(item, itemBoxIDs[index]));
 };
 
 const typeExtract = (item,type) => {
@@ -319,7 +318,7 @@ const sortAndGroup = (stuffInZenodo) => {
     return (keyB - keyA);
   });
   // Loop over the item types so they can be displayed one at a time
-  arrOfTypes.map(type => {
+  arrOfTypes.forEach(type => {
     const filteredStuffInZenodo = hits.filter(item => typeExtract(item,type));
     buildPage(filteredStuffInZenodo,type.repoType);
   });
