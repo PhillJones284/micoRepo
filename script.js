@@ -179,9 +179,9 @@ const stitchJnlYear = (metadata) => {
   }
   if ("publication_date" in metadata) {
     const year = metadata.publication_date.split("-")[0];
-    finalString = "<em>"+finalString +"</em>"+ " (" + year + ")";
+    finalString = finalString + " (" + year + ")";
   }
-  finalString = "Published in</Br>"+finalString
+  finalString = "<em>Published in</em></Br>"+finalString
   return finalString;
 };
 
@@ -271,9 +271,9 @@ const buildType = (repoType, itemNumber) => {
   //}
   // create journal title box. This used to be conditional on content type, changed because making it conditional is unneccersary
   //if (repoType == "article") {
-    const jnlLabelElemName = document.createElement("div");
+    /*const jnlLabelElemName = document.createElement("div");
     jnlLabelElemName.className = "itemJnlLabel";
-    elem.appendChild(jnlLabelElemName);
+    elem.appendChild(jnlLabelElemName);*/
     const jnlTitleElemName = document.createElement("div");
     jnlTitleElemName.className = "itemJnlTitle";
     elem.appendChild(jnlTitleElemName);
